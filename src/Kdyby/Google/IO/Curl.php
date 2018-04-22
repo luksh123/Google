@@ -13,7 +13,7 @@ namespace Kdyby\Google\IO;
 use Google_Exception;
 use Google_Http_Request;
 use Google_IO_Curl;
-use Nette\Diagnostics\Debugger;
+use Tracy\Debugger;
 use Nette\MemberAccessException;
 use Nette\Utils\ObjectMixin;
 

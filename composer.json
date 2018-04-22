@@ -21,8 +21,8 @@
 		}
 	],
 	"require": {
-		"nette/nette": "~2.4@dev",
-
+		"nette/nette": "~2.4",
+		"tracy/tracy": "^2.4",
 		"ext-curl": "*",
 		"ext-json": "*",
 		"google/apiclient": "^2.0"
