@@ -14,7 +14,7 @@ use Kdyby\Google\Configuration;
 use Kdyby\Google\Google;
 use Nette\Application;
 use Nette\Application\Responses;
-use Nette\Application\UI\PresenterComponent;
+use Nette\Application\UI\Component;
 use Nette\Http\UrlScript;
 use Nette;
 
@@ -26,7 +26,7 @@ use Nette;
  *
  * @method onResponse(AbstractDialog $dialog)
  */
-abstract class AbstractDialog extends PresenterComponent
+abstract class AbstractDialog extends Component
 {
 
 	/**

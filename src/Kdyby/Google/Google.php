@@ -14,7 +14,7 @@ use Google_Client;
 use Google_Exception;
 use Kdyby\Google\Dialog\AbstractDialog;
 use Nette\Application;
-use Nette\Application\UI\PresenterComponent;
+use Nette\Application\UI\Component;
 use Nette\ComponentModel\IComponent;
 use Nette\Http\Request;
 use Nette\Http\Url;
@@ -513,7 +513,7 @@ class Google
 		/** @var Application\UI\Presenter $presenter */
 		$presenter = $this->app->getPresenter();
 
-		/** @var PresenterComponent $parent */
+		/** @var Component $parent */
 		$parent = $dialog ? $dialog->getParent() : $presenter;
 
 		do {

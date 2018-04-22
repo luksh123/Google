@@ -81,7 +81,7 @@ class Configuration
 
 	/**
 	 * Accepts presenter name on which the Dialog component is attached.
-	 * You can also specify arguments as if the was the PresenterComponent::link() method.
+	 * You can also specify arguments as if the was the Component::link() method.
 	 *
 	 * Be aware, that the method resets all persistent parameters in the entire component tree.
 	 * If you need to really persist them, you have to specify them explicitly.
