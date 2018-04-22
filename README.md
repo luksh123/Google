@@ -1,7 +1,6 @@
 IJVo/Google - fork from Kdyby/Google
 ===
 
-
 [![Build Status](https://travis-ci.org/IJVo/Google.svg?branch=master)](https://travis-ci.org/IJVo/Google)
 [![Downloads this Month](https://img.shields.io/packagist/dm/ijvo/google.svg)](https://packagist.org/packages/ijvo/google)
 [![Latest stable](https://img.shields.io/packagist/v/ijvo/google.svg)](https://packagist.org/packages/ijvo/google)
@@ -13,7 +12,7 @@ Integration of [google/google-api-php-client](https://github.com/google/google-a
 Requirements
 ------------
 
-Kdyby/Google requires PHP 5.3.2 or higher with cUrl extension enabled.
+Kdyby/Google requires PHP 5.6 or higher with cUrl extension enabled.
 
 - [Nette Framework](https://github.com/nette/nette)
 - [Kdyby/CurlCaBundle](https://github.com/Kdyby/CurlCaBundle)
