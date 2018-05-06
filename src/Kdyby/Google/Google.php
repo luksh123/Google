@@ -16,7 +16,7 @@ use Kdyby\Google\Dialog\AbstractDialog;
 use Nette\Application;
 use Nette\Application\UI\Component;
 use Nette\ComponentModel\IComponent;
-use Nette\Http\Request;
+use Nette\Http\IRequest;
 use Nette\Http\Url;
 use Nette\Http\UrlScript;
 use Nette\Utils\Json;
@@ -45,7 +45,7 @@ class Google
 	private $app;
 
 	/**
-	 * @var Request
+	 * @var IRequest
 	 */
 	protected $httpRequest;
 
@@ -80,7 +80,7 @@ class Google
 
 
 	public function __construct(
-		Application\Application $app, Configuration $config, Request $httpRequest,
+		Application\Application $app, Configuration $config, IRequest $httpRequest,
 		SessionStorage $session, Google_Client $client)
 	{
 		$this->app = $app;
