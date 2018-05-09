@@ -16,9 +16,6 @@ use Nette\Application;
 use Nette\Application\Responses;
 use Nette\Application\UI\Component;
 use Nette\Http\UrlScript;
-use Nette;
-
-
 
 /**
  * @author Mikulas Dite <rullaf@gmail.com>
@@ -32,7 +29,7 @@ abstract class AbstractDialog extends Component
 	/**
 	 * @var array of function(AbstractDialog $dialog)
 	 */
-	public $onResponse = array();
+	public $onResponse = [];
 
 	/**
 	 * @var Google
@@ -55,7 +52,6 @@ abstract class AbstractDialog extends Component
 	protected $returnUri;
 
 
-
 	/**
 	 * @param Google $google
 	 */
@@ -69,7 +65,6 @@ abstract class AbstractDialog extends Component
 	}
 
 
-
 	/**
 	 * @return Google
 	 */
@@ -77,7 +72,6 @@ abstract class AbstractDialog extends Component
 	{
 		return $this->google;
 	}
-
 
 
 	/**
@@ -93,12 +87,10 @@ abstract class AbstractDialog extends Component
 	}
 
 
-
 	/**
 	 * @return UrlScript
 	 */
 	abstract public function getUrl();
-
 
 
 	/**
@@ -111,7 +103,6 @@ abstract class AbstractDialog extends Component
 	}
 
 
-
 	/**
 	 * Opens the dialog.
 	 */
@@ -119,7 +110,6 @@ abstract class AbstractDialog extends Component
 	{
 		$this->open();
 	}
-
 
 
 	/**
@@ -138,10 +128,9 @@ abstract class AbstractDialog extends Component
 
 			try {
 				$presenter->restoreRequest($this->session->last_request);
-
 			} catch (Application\AbortException $e) {
 				$refl = new \ReflectionProperty('Nette\Application\UI\Presenter', 'response');
-				$refl->setAccessible(TRUE);
+				$refl->setAccessible(true);
 
 				$response = $refl->getValue($presenter);
 				if ($response instanceof Responses\ForwardResponse) {
@@ -156,7 +145,6 @@ abstract class AbstractDialog extends Component
 			}
 		}
 
-		$this->presenter->redirect('this', array('state' => NULL, 'code' => NULL));
+		$this->presenter->redirect('this', ['state' => null, 'code' => null]);
 	}
-
 }

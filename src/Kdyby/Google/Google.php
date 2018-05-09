@@ -23,8 +23,6 @@ use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use Tracy\Debugger;
 
-
-
 if (!class_exists('Tracy\Debugger')) {
 	class_alias('Nette\Diagnostics\Debugger', 'Tracy\Debugger');
 }
@@ -37,12 +35,8 @@ if (!class_exists('Tracy\Debugger')) {
  */
 class Google
 {
-	use \Nette\SmartObject;
 
-	/**
-	 * @var \Nette\Application\Application
-	 */
-	private $app;
+	use \Nette\SmartObject;
 
 	/**
 	 * @var IRequest
@@ -55,18 +49,8 @@ class Google
 	protected $config;
 
 	/**
-	 * @var SessionStorage
-	 */
-	private $session;
-
-	/**
-	 * @var Google_Client
-	 */
-	private $client;
-
-	/**
 	 * The ID of the Google user, or 0 if the user is logged out.
-	 * @var integer
+	 * @var int
 	 */
 	protected $user;
 
@@ -77,11 +61,24 @@ class Google
 	 */
 	protected $accessToken;
 
+	/**
+	 * @var \Nette\Application\Application
+	 */
+	private $app;
+
+	/**
+	 * @var SessionStorage
+	 */
+	private $session;
+
+	/**
+	 * @var Google_Client
+	 */
+	private $client;
 
 
 	public function __construct(
-		Application\Application $app, Configuration $config, IRequest $httpRequest,
-		SessionStorage $session, Google_Client $client)
+	Application\Application $app, Configuration $config, IRequest $httpRequest, SessionStorage $session, Google_Client $client)
 	{
 		$this->app = $app;
 		$this->config = $config;
@@ -89,7 +86,6 @@ class Google
 		$this->session = $session;
 		$this->client = $client;
 	}
-
 
 
 	/**
@@ -107,7 +103,6 @@ class Google
 	}
 
 
-
 	/**
 	 * @internal
 	 * @return Configuration
@@ -118,7 +113,6 @@ class Google
 	}
 
 
-
 	/**
 	 * @return SessionStorage
 	 */
@@ -126,7 +120,6 @@ class Google
 	{
 		return $this->session;
 	}
-
 
 
 	/**
@@ -143,7 +136,6 @@ class Google
 		if (!is_array($token)) {
 			try {
 				$token = Json::decode($token, Json::FORCE_ARRAY);
-
 			} catch (JsonException $e) {
 				throw new InvalidArgumentException($e->getMessage(), 0, $e);
 			}
@@ -162,7 +154,6 @@ class Google
 	}
 
 
-
 	/**
 	 * Determines the access token that should be used for API calls.
 	 * The first time this is called, $this->accessToken is set equal
@@ -173,19 +164,18 @@ class Google
 	 * @param string $key
 	 * @return array|string The access token
 	 */
-	public function getAccessToken($key = NULL)
+	public function getAccessToken($key = null)
 	{
-		if ($this->accessToken === NULL && ($accessToken = $this->getUserAccessToken())) {
+		if ($this->accessToken === null && ($accessToken = $this->getUserAccessToken())) {
 			$this->setAccessToken($accessToken);
 		}
 
-		if ($key !== NULL) {
-			return array_key_exists($key, $this->accessToken) ? $this->accessToken[$key] : NULL;
+		if ($key !== null) {
+			return array_key_exists($key, $this->accessToken) ? $this->accessToken[$key] : null;
 		}
 
 		return $this->accessToken;
 	}
-
 
 
 	/**
@@ -199,7 +189,6 @@ class Google
 	}
 
 
-
 	/**
 	 * @return string
 	 */
@@ -209,24 +198,22 @@ class Google
 	}
 
 
-
 	/**
 	 * @param string $key
 	 * @return string|bool|NULL
 	 */
-	public function getIdToken($key = NULL)
+	public function getIdToken($key = null)
 	{
 		if (!$this->getUser() || !($verifiedIdToken = $this->getVerifiedIdToken())) {
-			return NULL;
+			return null;
 		}
 
-		if ($key !== NULL) {
-			return array_key_exists($key, $verifiedIdToken) ? $verifiedIdToken[$key] : NULL;
+		if ($key !== null) {
+			return array_key_exists($key, $verifiedIdToken) ? $verifiedIdToken[$key] : null;
 		}
 
 		return $verifiedIdToken;
 	}
-
 
 
 	/**
@@ -240,7 +227,6 @@ class Google
 	}
 
 
-
 	/**
 	 * Get the UID of the connected user, or 0 if the Google user is not connected.
 	 *
@@ -248,13 +234,12 @@ class Google
 	 */
 	public function getUser()
 	{
-		if ($this->user === NULL) {
+		if ($this->user === null) {
 			$this->user = $this->getUserFromAvailableData();
 		}
 
 		return $this->user;
 	}
-
 
 
 	/**
@@ -271,14 +256,14 @@ class Google
 		if (($code = $this->getCode()) && $code != $this->session->code) {
 			if ($accessToken = $this->getAccessTokenFromCode($code)) {
 				$this->session->code = $code;
-				$this->session->token_payload = NULL;
-				$this->session->refresh_token = isset($accessToken['refresh_token']) ? $accessToken['refresh_token'] : NULL;
+				$this->session->token_payload = null;
+				$this->session->refresh_token = isset($accessToken['refresh_token']) ? $accessToken['refresh_token'] : null;
 				return $this->session->access_token = $accessToken;
 			}
 
 			// code was bogus, so everything based on it should be invalidated.
 			$this->session->clearAll();
-			return FALSE;
+			return false;
 		}
 
 		if (empty($this->session->access_token) && !empty($this->session->refresh_token)) {
@@ -293,13 +278,12 @@ class Google
 
 				$accessToken['refresh_token'] = $this->session->refresh_token;
 
-				$this->session->code = NULL;
+				$this->session->code = null;
 				return $this->session->access_token = $accessToken;
-
 			} catch (\Exception $e) {
 				Debugger::log($e, 'google');
 				$this->session->clearAll();
-				return FALSE;
+				return false;
 			}
 		}
 
@@ -308,7 +292,7 @@ class Google
 			$token = $this->session->access_token;
 			if (isset($token['created']) && isset($token['expires_in']) && (($token['created'] + ($token['expires_in'] - 30)) < time())) {
 				$this->session->clearAll();
-				return FALSE;
+				return false;
 			}
 		}
 
@@ -320,7 +304,6 @@ class Google
 	}
 
 
-
 	/**
 	 * @param string $code An authorization code.
 	 * @return array|bool An access token exchanged for the authorization code, or false if an access token could not be generated.
@@ -328,7 +311,7 @@ class Google
 	protected function getAccessTokenFromCode($code)
 	{
 		if (empty($code)) {
-			return FALSE;
+			return false;
 		}
 
 		try {
@@ -336,19 +319,17 @@ class Google
 			$response = $this->client->authenticate($code);
 
 			if (empty($response) || !is_array($response)) {
-				return FALSE;
+				return false;
 			}
 
 			return $response;
-
 		} catch (\Exception $e) {
 			Debugger::log($e, 'google');
 			// most likely that user very recently revoked authorization.
 			// In any event, we don't have an access token, so say so.
-			return FALSE;
+			return false;
 		}
 	}
-
 
 
 	/**
@@ -356,17 +337,16 @@ class Google
 	 * requests, then considering an authorization code, and then
 	 * falling back to any persistent store storing the user.
 	 *
-	 * @return integer The id of the connected Google user, or 0 if no such user exists.
+	 * @return int The id of the connected Google user, or 0 if no such user exists.
 	 */
 	protected function getUserFromAvailableData()
 	{
 		$user = $this->session->get('user_id', 0);
 
 		// use access_token to fetch user id if we have a user access_token, or if the cached access token has changed.
-		if (($accessToken = $this->getAccessToken()) && !($user && $this->session->access_token === $accessToken) ) {
+		if (($accessToken = $this->getAccessToken()) && !($user && $this->session->access_token === $accessToken)) {
 			if (!$user = $this->getUserFromAccessToken()) {
 				$this->session->clearAll();
-
 			} else {
 				$this->session->user_id = $user;
 			}
@@ -374,7 +354,6 @@ class Google
 
 		return $user;
 	}
-
 
 
 	/**
@@ -388,20 +367,19 @@ class Google
 	{
 		$state = $this->getRequest('state');
 		if (($code = $this->getRequest('code')) && $state && $this->session->state === $state) {
-			$this->session->state = NULL; // CSRF state has done its job, so clear it
+			$this->session->state = null; // CSRF state has done its job, so clear it
 			return $code;
 		}
 
-		return FALSE;
+		return false;
 	}
-
 
 
 	/**
 	 * Retrieves the UID with the understanding that $this->accessToken has already been set and is seemingly legitimate.
 	 * It relies on Google's API to retrieve user information and then extract the user ID.
 	 *
-	 * @return integer Returns the UID of the Google user, or 0 if the Google user could not be determined.
+	 * @return int Returns the UID of the Google user, or 0 if the Google user could not be determined.
 	 */
 	protected function getUserFromAccessToken()
 	{
@@ -410,14 +388,13 @@ class Google
 				return $this->getProfile()->getId();
 			}
 
-			$userIdKey = "sub";
+			$userIdKey = 'sub';
 
 			if (!array_key_exists($userIdKey, $verifiedIdToken)) {
 				return 0;
 			}
 
 			return $verifiedIdToken[$userIdKey];
-
 		} catch (\Exception $e) {
 			Debugger::log($e, 'google');
 		}
@@ -426,18 +403,17 @@ class Google
 	}
 
 
-
 	/**
 	 * @return array|NULL
 	 */
 	protected function getVerifiedIdToken()
 	{
 		if (!$token = $this->getAccessToken()) {
-			return NULL;
+			return null;
 		}
 
 		if (!isset($token['id_token'])) {
-			return NULL;
+			return null;
 		}
 
 		if (!empty($this->session->token_payload)) {
@@ -449,11 +425,11 @@ class Google
 		// ensure the token is set
 		$this->client->setAccessToken(json_encode($token));
 
-		$tokenPayload =  $this->client->verifyIdToken();
+		$tokenPayload = $this->client->verifyIdToken();
 
-		if(!$tokenPayload) {
-			$this->session->token_payload = NULL;
-			return NULL;
+		if (!$tokenPayload) {
+			$this->session->token_payload = null;
+			return null;
 		}
 
 		$this->session->token_payload = $tokenPayload;
@@ -462,17 +438,15 @@ class Google
 	}
 
 
-
 	/**
 	 * Destroy the current session
 	 */
 	public function destroySession()
 	{
-		$this->accessToken = NULL;
-		$this->user = NULL;
+		$this->accessToken = null;
+		$this->user = null;
 		$this->session->clearAll();
 	}
-
 
 
 	/**
@@ -482,7 +456,6 @@ class Google
 	{
 		return new Dialog\LoginDialog($this);
 	}
-
 
 
 	/**
@@ -495,12 +468,11 @@ class Google
 	}
 
 
-
 	/**
 	 * @param AbstractDialog $dialog
 	 * @return Application\UI\Link|UrlScript
 	 */
-	public function getReturnLink(AbstractDialog $dialog = NULL)
+	public function getReturnLink(AbstractDialog $dialog = null)
 	{
 		$destination = $this->config->getReturnDestination();
 
@@ -508,7 +480,7 @@ class Google
 			return $destination[0];
 		}
 
-		$reset = array();
+		$reset = [];
 
 		/** @var Application\UI\Presenter $presenter */
 		$presenter = $this->app->getPresenter();
@@ -520,14 +492,13 @@ class Google
 			$prefix = $parent instanceof Application\IPresenter ? '' : $parent->lookupPath('Nette\Application\IPresenter');
 
 			foreach ($parent->getReflection()->getPersistentParams() as $name => $meta) {
-				$reset[($prefix ? $prefix . IComponent::NAME_SEPARATOR : '') . $name] = array_key_exists('def', $meta) ? $meta['def'] : NULL;
+				$reset[($prefix ? $prefix . IComponent::NAME_SEPARATOR : '') . $name] = array_key_exists('def', $meta) ? $meta['def'] : null;
 			}
-
 		} while ($parent = $parent->getParent());
 
 		$args = is_array($destination[1]) ? $destination[1] : array_slice($destination, 1);
 
-		if ($dialog !== NULL) {
+		if ($dialog !== null) {
 			$args['do'] = $dialog->lookupPath('Nette\Application\IPresenter') . IComponent::NAME_SEPARATOR . 'response';
 		}
 
@@ -535,13 +506,12 @@ class Google
 	}
 
 
-
 	/**
 	 * @param string $key
 	 * @param mixed $default
 	 * @return mixed|null
 	 */
-	protected function getRequest($key, $default = NULL)
+	protected function getRequest($key, $default = null)
 	{
 		if ($value = $this->httpRequest->getPost($key)) {
 			return $value;
@@ -553,5 +523,4 @@ class Google
 
 		return $default;
 	}
-
 }

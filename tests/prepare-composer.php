@@ -9,8 +9,8 @@ if (getenv('NETTE') !== 'default') {
 	unlink($rootDir . '/composer.json');
 	copy($composerFile, $rootDir . '/composer.json');
 
-	echo "Using tests/", basename($composerFile);
+	echo 'Using tests/', basename($composerFile);
 
 } else {
-	echo "Using default composer.json";
+	echo 'Using default composer.json';
 }

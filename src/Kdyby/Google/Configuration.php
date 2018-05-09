@@ -10,9 +10,6 @@
 
 namespace Kdyby\Google;
 
-use Nette\Http\Url;
-
-
 
 /**
  * @author Mikulas Dite <rullaf@gmail.com>
@@ -20,6 +17,7 @@ use Nette\Http\Url;
  */
 class Configuration
 {
+
 	use \Nette\SmartObject;
 
 	/**
@@ -48,21 +46,19 @@ class Configuration
 	private $returnDestination;
 
 
-
 	/**
 	 * @param string $clientId
 	 * @param string $clientSecret
 	 * @param string $apiKey
 	 * @param array $scopes
 	 */
-	public function __construct($clientId, $clientSecret, $apiKey, array $scopes = array())
+	public function __construct($clientId, $clientSecret, $apiKey, array $scopes = [])
 	{
 		$this->clientId = $clientId;
 		$this->clientSecret = $clientSecret;
 		$this->apiKey = $apiKey;
 		$this->scopes = $scopes;
 	}
-
 
 
 	/**
@@ -78,7 +74,6 @@ class Configuration
 	}
 
 
-
 	/**
 	 * Accepts presenter name on which the Dialog component is attached.
 	 * You can also specify arguments as if the was the Component::link() method.
@@ -90,16 +85,15 @@ class Configuration
 	 * @param array $args
 	 * @return Google
 	 */
-	public function setReturnDestination($destination, $args = array())
+	public function setReturnDestination($destination, $args = [])
 	{
 		if ($destination === 'this') {
 			throw new InvalidArgumentException('Please specify a valid presenter name');
 		}
 
-		$this->returnDestination = func_get_args() + array(1 => array());
+		$this->returnDestination = func_get_args() + [1 => []];
 		return $this;
 	}
-
 
 
 	/**
@@ -109,15 +103,14 @@ class Configuration
 	{
 		if (!$this->returnDestination) {
 			throw new InvalidStateException(
-				"Google oauth can redirect back only to one exactly specified url (or several, but they still have to be specified), " .
-				"so you have to set the action of this url with " . get_called_class() . "::setReturnDestination() or preferably in config under key `google: returnUri:`. " .
-				"The format is either an uri `https://www.kdyby.org/oauth-google`, presenter name `:Front:Homepage:` in which case the signal to this component will be added lazily, " .
-				"or you can specify parameters `':Front:Homepage:'(page=2)`. Be aware that the presenter name should be always absolute and it's the preferred way to specify the return uri. " .
-				"After successful authorization, the user will be redirected back where he started, using the restore request."
+			'Google oauth can redirect back only to one exactly specified url (or several, but they still have to be specified), ' .
+			'so you have to set the action of this url with ' . get_called_class() . '::setReturnDestination() or preferably in config under key `google: returnUri:`. ' .
+			'The format is either an uri `https://www.kdyby.org/oauth-google`, presenter name `:Front:Homepage:` in which case the signal to this component will be added lazily, ' .
+			"or you can specify parameters `':Front:Homepage:'(page=2)`. Be aware that the presenter name should be always absolute and it's the preferred way to specify the return uri. " .
+			'After successful authorization, the user will be redirected back where he started, using the restore request.'
 			);
 		}
 
 		return $this->returnDestination;
 	}
-
 }

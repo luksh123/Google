@@ -12,7 +12,6 @@ namespace Kdyby\Google;
 
 use Nette;
 
-
 /**
  * Stores accessToken and other critical data that should be shared across requests.
  *
@@ -28,13 +27,13 @@ use Nette;
  */
 class SessionStorage
 {
+
 	use \Nette\SmartObject;
 
 	/**
 	 * @var \Nette\Http\SessionSection
 	 */
 	protected $session;
-
 
 
 	/**
@@ -49,7 +48,6 @@ class SessionStorage
 	}
 
 
-
 	/**
 	 * Lays down a CSRF state token for this process.
 	 *
@@ -58,9 +56,10 @@ class SessionStorage
 	public function establishCSRFTokenState()
 	{
 		if (!$this->state) {
-			$this->state = md5(uniqid(mt_rand(), TRUE));
+			$this->state = md5(uniqid(mt_rand(), true));
 		}
 	}
+
 
 	/**
 	 * Stores the given ($key, $value) pair, so that future calls to
@@ -80,18 +79,16 @@ class SessionStorage
 	}
 
 
-
 	/**
 	 * @param string $key The key of the data to retrieve
 	 * @param mixed $default The default value to return if $key is not found
 	 *
 	 * @return mixed
 	 */
-	public function get($key, $default = FALSE)
+	public function get($key, $default = false)
 	{
 		return isset($this->session->$key) ? $this->session->$key : $default;
 	}
-
 
 
 	/**
@@ -106,7 +103,6 @@ class SessionStorage
 	}
 
 
-
 	/**
 	 * Clear all data from the persistent storage
 	 *
@@ -116,7 +112,6 @@ class SessionStorage
 	{
 		$this->session->remove();
 	}
-
 
 
 	/**
@@ -130,7 +125,6 @@ class SessionStorage
 	}
 
 
-
 	/**
 	 * @param string $name
 	 * @param mixed $value
@@ -139,7 +133,6 @@ class SessionStorage
 	{
 		$this->set($name, $value);
 	}
-
 
 
 	/**
@@ -152,7 +145,6 @@ class SessionStorage
 	}
 
 
-
 	/**
 	 * @param string $name
 	 */
@@ -160,5 +152,4 @@ class SessionStorage
 	{
 		$this->clear($name);
 	}
-
 }

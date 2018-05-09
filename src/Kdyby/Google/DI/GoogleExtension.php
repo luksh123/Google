@@ -10,12 +10,10 @@
 
 namespace Kdyby\Google\DI;
 
+use Nette;
 use Nette\DI\CompilerExtension;
 use Nette\DI\Statement;
 use Nette\Utils\Validators;
-use Nette;
-
-
 
 /**
  * @author Mikulas Dite <rullaf@gmail.com>
@@ -25,19 +23,18 @@ class GoogleExtension extends CompilerExtension
 {
 
 	/** @var array */
-	public $defaults = array(
-		'appId' => NULL, // kdyby-style naming
-		'appSecret' => NULL,
-		'clientId' => NULL, // google-style naming
-		'clientSecret' => NULL,
-		'apiKey' => NULL,
-		'clearAllWithLogout' => TRUE,
-		'scopes' => array('profile', 'email'),
-		'accessType' => 'online',
-		'returnUri' => NULL,
-		'debugger' => '%debugMode%'
-	);
-
+	public $defaults = [
+			'appId' => null, // kdyby-style naming
+			'appSecret' => null,
+			'clientId' => null, // google-style naming
+			'clientSecret' => null,
+			'apiKey' => null,
+			'clearAllWithLogout' => true,
+			'scopes' => ['profile', 'email'],
+			'accessType' => 'online',
+			'returnUri' => null,
+			'debugger' => '%debugMode%',
+	];
 
 
 	public function loadConfiguration()
@@ -48,9 +45,8 @@ class GoogleExtension extends CompilerExtension
 		$rawConfig = $this->getConfig();
 		if (isset($rawConfig['appId']) || isset($rawConfig['appSecret'])) {
 			if (isset($rawConfig['clientId']) || isset($rawConfig['clientSecret'])) {
-				throw new Nette\Utils\AssertionException("Use only one syntax, either appId and appSecret or clientId and clientSecret, do not combine them");
+				throw new Nette\Utils\AssertionException('Use only one syntax, either appId and appSecret or clientId and clientSecret, do not combine them');
 			}
-
 		} else {
 			$config['appId'] = $rawConfig['clientId'];
 			$config['appSecret'] = $rawConfig['clientSecret'];
@@ -61,21 +57,21 @@ class GoogleExtension extends CompilerExtension
 		Validators::assert($config['appSecret'], 'string:24', 'App secret');
 		Validators::assert($config['apiKey'], 'string:39|null', 'API Key');
 		Validators::assert($config['scopes'], 'list', 'Permission scopes');
-		if (!in_array($config['accessType'], $allowed = array('online', 'offline'))) {
-			throw new Nette\Utils\AssertionException("Key accessType is expected to be one of [" . implode(', ', $allowed) . "], but '" . $config['accessType'] . "' was given.");
+		if (!in_array($config['accessType'], $allowed = ['online', 'offline'], true)) {
+			throw new Nette\Utils\AssertionException('Key accessType is expected to be one of [' . implode(', ', $allowed) . "], but '" . $config['accessType'] . "' was given.");
 		}
 
 		$builder->addDefinition($this->prefix('client'))
-			->setClass('Kdyby\Google\Google');
+						->setClass('Kdyby\Google\Google');
 
 		$configuration = $builder->addDefinition($this->prefix('config'))
-			->setClass('Kdyby\Google\Configuration')
-			->setArguments(array(
+						->setClass('Kdyby\Google\Configuration')
+						->setArguments([
 				$config['appId'],
 				$config['appSecret'],
 				$config['apiKey'],
 				$config['scopes'],
-			));
+		]);
 
 		if ($config['returnUri'] instanceof \stdClass) { // was an neon entity, must be valid presenter name with parameters
 			$destination = $config['returnUri']->value;
@@ -84,8 +80,7 @@ class GoogleExtension extends CompilerExtension
 				throw new Nette\Utils\AssertionException("Please fix your configuration, expression '$destination' does not look like a valid presenter name.");
 			}
 
-			$configuration->addSetup('setReturnDestination', array($destination, $config['returnUri']->attributes));
-
+			$configuration->addSetup('setReturnDestination', [$destination, $config['returnUri']->attributes]);
 		} elseif ($config['returnUri'] instanceof Statement) { // was an neon entity, must be valid presenter name with parameters
 			$destination = $config['returnUri']->entity;
 
@@ -93,17 +88,16 @@ class GoogleExtension extends CompilerExtension
 				throw new Nette\Utils\AssertionException("Please fix your configuration, expression '$destination' does not look like a valid presenter name.");
 			}
 
-			$configuration->addSetup('setReturnDestination', array($destination, $config['returnUri']->arguments));
-
-		} elseif ($config['returnUri'] !== NULL) { // must be a valid uri or presenter name
-			$destination = NULL;
+			$configuration->addSetup('setReturnDestination', [$destination, $config['returnUri']->arguments]);
+		} elseif ($config['returnUri'] !== null) { // must be a valid uri or presenter name
+			$destination = null;
 
 			if (self::isUrl($config['returnUri'])) {
 				$destination = new Nette\Http\UrlScript($config['returnUri']);
 				if (!$destination->scheme) {
 					$fixed = clone $destination;
 					$fixed->scheme = 'https';
-					throw new Nette\Utils\AssertionException("Please fix your configuration, scheme for returnUri is missing. Hint: `" . $this->name . ": returnUri: $fixed`");
+					throw new Nette\Utils\AssertionException('Please fix your configuration, scheme for returnUri is missing. Hint: `' . $this->name . ": returnUri: $fixed`");
 				}
 
 				if (!$destination->path) {
@@ -112,44 +106,32 @@ class GoogleExtension extends CompilerExtension
 					throw new Nette\Utils\AssertionException("Are you sure that you wanna redirect from Google auth to '$destination'? Hint: you might wanna add some path `" . $this->name . ": returnUri: $fixed`");
 				}
 
-				$destination = new Statement('Nette\Http\UrlScript', array((string) $destination));
-
+				$destination = new Statement('Nette\Http\UrlScript', [(string) $destination]);
 			} elseif (!self::isPresenterName($config['returnUri'])) { // presenter name
 				throw new Nette\Utils\AssertionException("Please fix your configuration, expression '{$config['returnUri']}' does not look like a valid presenter name.");
-
 			} else { // presenter name
 				$destination = $config['returnUri'];
 			}
 
-			$configuration->addSetup('setReturnDestination', array($destination));
+			$configuration->addSetup('setReturnDestination', [$destination]);
 		}
 
 		$builder->addDefinition($this->prefix('apiClient'))
-			->setClass('Google_Client')
-			->addSetup('$this->addService(?, ?)', array($this->prefix('apiClient'), '@self'))
-			->addSetup('?->configureClient(?)', array($this->prefix('@config'), '@self'))
-			->addSetup('setAccessType', array($config['accessType']));
-
-//		$curl = $builder->addDefinition($this->prefix('apiIo'))
-//			->setClass('Kdyby\Google\IO\Curl');
+						->setClass('Google_Client')
+						->addSetup('$this->addService(?, ?)', [$this->prefix('apiClient'), '@self'])
+						->addSetup('?->configureClient(?)', [$this->prefix('@config'), '@self'])
+						->addSetup('setAccessType', [$config['accessType']]);
 
 		$builder->addDefinition($this->prefix('session'))
-			->setClass('Kdyby\Google\SessionStorage');
-
-//		if ($config['debugger']) {
-//			$builder->addDefinition($this->prefix('panel'))
-//				->setClass('Kdyby\Google\Diagnostics\Panel');
-//			$curl->addSetup($this->prefix('@panel') . '::register', array('@self'));
-//		}
+						->setClass('Kdyby\Google\SessionStorage');
 
 		if ($config['clearAllWithLogout']) {
 			$builder->getDefinition('user')
-				->addSetup('$sl = ?; ?->onLoggedOut[] = function () use ($sl) { $sl->getService(?)->clearAll(); }', array(
-					'@container', '@self', $this->prefix('session')
-				));
+							->addSetup('$sl = ?; ?->onLoggedOut[] = function () use ($sl) { $sl->getService(?)->clearAll(); }', [
+									'@container', '@self', $this->prefix('session'),
+			]);
 		}
 	}
-
 
 
 	/**
@@ -165,7 +147,6 @@ class GoogleExtension extends CompilerExtension
 	}
 
 
-
 	/**
 	 * @param string $value
 	 * @return bool
@@ -174,7 +155,6 @@ class GoogleExtension extends CompilerExtension
 	{
 		return (bool) preg_match('~^(?:\\/\\/)?\\:?[a-z0-9][a-z0-9:]+$~i', $value);
 	}
-
 
 
 	/**
@@ -186,5 +166,4 @@ class GoogleExtension extends CompilerExtension
 			$compiler->addExtension('google', new GoogleExtension());
 		};
 	}
-
 }

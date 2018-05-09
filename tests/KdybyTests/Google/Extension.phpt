@@ -18,13 +18,12 @@ use Tester\Assert;
 
 require_once __DIR__ . '/../bootstrap.php';
 
-
-
 /**
  * @author Filip Procházka <filip@prochazka.su>
  */
 class ExtensionTest extends Tester\TestCase
 {
+
 
 	/**
 	 * @return \SystemContainer|\Nette\DI\Container
@@ -40,14 +39,12 @@ class ExtensionTest extends Tester\TestCase
 	}
 
 
-
 	public function testFunctional()
 	{
 		$dic = $this->createContainer();
 		Assert::true($dic->getService('google.client') instanceof Kdyby\Google\Google);
 		Assert::true($dic->getService('google.config') instanceof Kdyby\Google\Configuration);
 	}
-
 }
 
 KdybyTests\run(new ExtensionTest());

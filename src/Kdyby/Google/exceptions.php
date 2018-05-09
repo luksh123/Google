@@ -10,7 +10,6 @@
 
 namespace Kdyby\Google;
 
-
 /**
  * Common interface for caching Google exceptions
  *
@@ -21,8 +20,6 @@ interface Exception
 
 }
 
-
-
 /**
  * @author Filip Procházka <email@filip-prochazka.com>
  */
@@ -31,8 +28,6 @@ class InvalidArgumentException extends \InvalidArgumentException implements Exce
 
 }
 
-
-
 /**
  * @author Filip Procházka <filip@prochazka.su>
  */
@@ -40,8 +35,6 @@ class InvalidStateException extends \RuntimeException implements Exception
 {
 
 }
-
-
 
 /**
  * @author Filip Procházka <filip@prochazka.su>

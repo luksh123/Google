@@ -7,4 +7,3 @@ google:
 	accessType: 'online'
 	returnUri: ':Admin:LoginDropbox:'(do=dropboxLogin-response)
 	debugger: '%debugMode%'
-

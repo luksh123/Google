@@ -12,14 +12,13 @@ namespace Kdyby\Google\Dialog;
 
 use Nette\Http\UrlScript;
 
-
-
 /**
  * @author Mikulas Dite <rullaf@gmail.com>
  * @author Filip Procházka <filip@prochazka.su>
  */
 class LoginDialog extends AbstractDialog
 {
+
 
 	/**
 	 * Checks, if there is a user in storage and if not, it redirects to login dialog.
@@ -30,7 +29,6 @@ class LoginDialog extends AbstractDialog
 	{
 		$this->open();
 	}
-
 
 
 	/**
@@ -49,5 +47,4 @@ class LoginDialog extends AbstractDialog
 
 		return new UrlScript($this->google->client->createAuthUrl());
 	}
-
 }
