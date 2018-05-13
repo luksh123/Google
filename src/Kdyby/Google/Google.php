@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /**
  * This file is part of the Kdyby (http://www.kdyby.org)
  *
@@ -257,7 +257,7 @@ class Google
 			if ($accessToken = $this->getAccessTokenFromCode($code)) {
 				$this->session->code = $code;
 				$this->session->token_payload = null;
-				$this->session->refresh_token = isset($accessToken['refresh_token']) ? $accessToken['refresh_token'] : null;
+				$this->session->refresh_token = $accessToken['refresh_token'] ?? null;
 				return $this->session->access_token = $accessToken;
 			}
 

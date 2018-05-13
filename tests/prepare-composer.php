@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 $rootDir = __DIR__ . '/..';
 $testsDir = __DIR__;
 
