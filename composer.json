@@ -28,7 +28,7 @@
 		"google/apiclient": "^2.0"
 	},
 	"replace": {
-		"nette/robot-loader": "^3.1.0"
+		"nette/robot-loader": ">=2.1"
 	},
 	"require-dev": {
 		"nette/tester": "@dev",
